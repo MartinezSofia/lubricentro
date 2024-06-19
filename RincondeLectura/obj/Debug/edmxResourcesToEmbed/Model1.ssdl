@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="dbLubricentroModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="cliente">
+    <Key>
+      <PropertyRef Name="dnicli" />
+    </Key>
+    <Property Name="dnicli" Type="int" Nullable="false" />
+    <Property Name="nomyape" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="telefono" Type="bigint" Nullable="false" />
+    <Property Name="direccion" Type="varchar" MaxLength="100" Nullable="false" />
+  </EntityType>
+  <EntityType Name="producto">
+    <Key>
+      <PropertyRef Name="idproducto" />
+    </Key>
+    <Property Name="idproducto" Type="int" Nullable="false" />
+    <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="descripcion" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="precio" Type="decimal" Precision="8" Scale="2" Nullable="false" />
+    <Property Name="stock" Type="int" Nullable="false" />
+    <Property Name="estado" Type="varchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="turno">
+    <Key>
+      <PropertyRef Name="idturno" />
+    </Key>
+    <Property Name="idturno" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="fecha" Type="date" Nullable="false" />
+    <Property Name="hora" Type="varchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <EntityType Name="usuario">
+    <Key>
+      <PropertyRef Name="dni" />
+    </Key>
+    <Property Name="dni" Type="int" Nullable="false" />
+    <Property Name="nombre" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="apellido" Type="varchar" MaxLength="100" Nullable="false" />
+    <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="pass" Type="varchar" MaxLength="50" Nullable="false" />
+    <Property Name="tipousuario" Type="char" MaxLength="1" Nullable="false" />
+    <Property Name="estado" Type="varchar" MaxLength="20" Nullable="false" />
+  </EntityType>
+  <EntityType Name="vehiculo">
+    <Key>
+      <PropertyRef Name="patente" />
+    </Key>
+    <Property Name="patente" Type="varchar" MaxLength="7" Nullable="false" />
+    <Property Name="modelo" Type="varchar" MaxLength="200" Nullable="false" />
+    <Property Name="marca" Type="varchar" MaxLength="200" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ventacabecera">
+    <Key>
+      <PropertyRef Name="idventa" />
+    </Key>
+    <Property Name="idventa" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="total" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="dnicli" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ventadetalle">
+    <Key>
+      <PropertyRef Name="iddetalle" />
+    </Key>
+    <Property Name="iddetalle" Type="int" Nullable="false" />
+    <Property Name="idventa" Type="int" Nullable="false" />
+    <Property Name="importe" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="idproducto" Type="int" Nullable="false" />
+    <Property Name="cantidad" Type="int" Nullable="false" />
+    <Property Name="precio" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+  </EntityType>
+  <Association Name="fk_idproducto">
+    <End Role="producto" Type="Self.producto" Multiplicity="1" />
+    <End Role="ventadetalle" Type="Self.ventadetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="idproducto" />
+      </Principal>
+      <Dependent Role="ventadetalle">
+        <PropertyRef Name="idproducto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ventas_cabecera_ventas_detalles">
+    <End Role="ventacabecera" Type="Self.ventacabecera" Multiplicity="1" />
+    <End Role="ventadetalle" Type="Self.ventadetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ventacabecera">
+        <PropertyRef Name="idventa" />
+      </Principal>
+      <Dependent Role="ventadetalle">
+        <PropertyRef Name="idventa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="dbLubricentroModelStoreContainer">
+    <EntitySet Name="cliente" EntityType="Self.cliente" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="producto" EntityType="Self.producto" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="turno" EntityType="Self.turno" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="usuario" EntityType="Self.usuario" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vehiculo" EntityType="Self.vehiculo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ventacabecera" EntityType="Self.ventacabecera" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ventadetalle" EntityType="Self.ventadetalle" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="fk_idproducto" Association="Self.fk_idproducto">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="ventadetalle" EntitySet="ventadetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ventas_cabecera_ventas_detalles" Association="Self.FK_ventas_cabecera_ventas_detalles">
+      <End Role="ventacabecera" EntitySet="ventacabecera" />
+      <End Role="ventadetalle" EntitySet="ventadetalle" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

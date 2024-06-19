@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="dbLubricentroModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="cliente">
+    <Key>
+      <PropertyRef Name="dnicli" />
+    </Key>
+    <Property Name="dnicli" Type="Int32" Nullable="false" />
+    <Property Name="nomyape" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="telefono" Type="Int64" Nullable="false" />
+    <Property Name="direccion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="producto">
+    <Key>
+      <PropertyRef Name="idproducto" />
+    </Key>
+    <Property Name="idproducto" Type="Int32" Nullable="false" />
+    <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="precio" Type="Decimal" Precision="8" Scale="2" Nullable="false" />
+    <Property Name="stock" Type="Int32" Nullable="false" />
+    <Property Name="estado" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="ventadetalle" Relationship="Self.fk_idproducto" FromRole="producto" ToRole="ventadetalle" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="turno">
+    <Key>
+      <PropertyRef Name="idturno" />
+    </Key>
+    <Property Name="idturno" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="fecha" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="hora" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="usuario">
+    <Key>
+      <PropertyRef Name="dni" />
+    </Key>
+    <Property Name="dni" Type="Int32" Nullable="false" />
+    <Property Name="nombre" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="apellido" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="pass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="tipousuario" Type="String" MaxLength="1" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="estado" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="vehiculo">
+    <Key>
+      <PropertyRef Name="patente" />
+    </Key>
+    <Property Name="patente" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="modelo" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="marca" Type="String" MaxLength="200" FixedLength="false" Unicode="false" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ventacabecera">
+    <Key>
+      <PropertyRef Name="idventa" />
+    </Key>
+    <Property Name="idventa" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="total" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="dnicli" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="ventadetalle" Relationship="Self.FK_ventas_cabecera_ventas_detalles" FromRole="ventacabecera" ToRole="ventadetalle" />
+  </EntityType>
+  <EntityType Name="ventadetalle">
+    <Key>
+      <PropertyRef Name="iddetalle" />
+    </Key>
+    <Property Name="iddetalle" Type="Int32" Nullable="false" />
+    <Property Name="idventa" Type="Int32" Nullable="false" />
+    <Property Name="importe" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <Property Name="idproducto" Type="Int32" Nullable="false" />
+    <Property Name="cantidad" Type="Int32" Nullable="false" />
+    <Property Name="precio" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+    <NavigationProperty Name="producto" Relationship="Self.fk_idproducto" FromRole="ventadetalle" ToRole="producto" />
+    <NavigationProperty Name="ventacabecera" Relationship="Self.FK_ventas_cabecera_ventas_detalles" FromRole="ventadetalle" ToRole="ventacabecera" />
+  </EntityType>
+  <Association Name="fk_idproducto">
+    <End Role="producto" Type="Self.producto" Multiplicity="1" />
+    <End Role="ventadetalle" Type="Self.ventadetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producto">
+        <PropertyRef Name="idproducto" />
+      </Principal>
+      <Dependent Role="ventadetalle">
+        <PropertyRef Name="idproducto" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ventas_cabecera_ventas_detalles">
+    <End Role="ventacabecera" Type="Self.ventacabecera" Multiplicity="1" />
+    <End Role="ventadetalle" Type="Self.ventadetalle" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ventacabecera">
+        <PropertyRef Name="idventa" />
+      </Principal>
+      <Dependent Role="ventadetalle">
+        <PropertyRef Name="idventa" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="dbLubricentroEntities2" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="cliente" EntityType="Self.cliente" />
+    <EntitySet Name="producto" EntityType="Self.producto" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
+    <EntitySet Name="turno" EntityType="Self.turno" />
+    <EntitySet Name="usuario" EntityType="Self.usuario" />
+    <EntitySet Name="vehiculo" EntityType="Self.vehiculo" />
+    <EntitySet Name="ventacabecera" EntityType="Self.ventacabecera" />
+    <EntitySet Name="ventadetalle" EntityType="Self.ventadetalle" />
+    <AssociationSet Name="fk_idproducto" Association="Self.fk_idproducto">
+      <End Role="producto" EntitySet="producto" />
+      <End Role="ventadetalle" EntitySet="ventadetalle" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ventas_cabecera_ventas_detalles" Association="Self.FK_ventas_cabecera_ventas_detalles">
+      <End Role="ventacabecera" EntitySet="ventacabecera" />
+      <End Role="ventadetalle" EntitySet="ventadetalle" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
